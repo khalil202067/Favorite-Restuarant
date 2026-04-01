@@ -1,0 +1,19 @@
+{
+  "name": "favorite-restaurant-chatbot",
+  "version": "1.0.0",
+  "description": "AI-powered chatbot for Favorite Restaurant – Eastleigh, Nairobi",
+  "scripts": {
+    "seed": "node scripts/seed.js",
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "openai": "^4.28.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.5.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
