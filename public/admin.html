@@ -179,9 +179,16 @@
     <div class="login-logo">🔐</div>
     <h1>Admin Dashboard</h1>
     <p>Favorite Restaurant AI · Secure Access</p>
-    <input class="login-input" type="password" id="admin-pw" placeholder="Enter admin password" autocomplete="current-password">
+    <input class="login-input" type="email" id="admin-email" 
+      placeholder="Enter your Gmail address" 
+      autocomplete="email"
+      onkeypress="if(event.key==='Enter')document.getElementById('admin-pw').focus()">
+    <input class="login-input" type="password" id="admin-pw" 
+      placeholder="Enter admin password" 
+      autocomplete="current-password"
+      onkeypress="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">Login →</button>
-    <div class="login-err" id="login-err">Incorrect password. Please try again.</div>
+    <div class="login-err" id="login-err">Invalid email or password. Please try again.</div>
   </div>
 </div>
 
