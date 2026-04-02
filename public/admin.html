@@ -342,27 +342,41 @@
 
   // ── LOGIN ──────────────────────────────────────────────────────────────────
   function doLogin() {
-    var pw = document.getElementById('admin-pw').value.trim();
-    if (!pw) return;
-    ADMIN_PW = pw;
-    var err = document.getElementById('login-err');
-    err.style.display = 'none';
+  const email = document.getElementById('admin-email').value.trim().toLowerCase();
+  const pw = document.getElementById('admin-pw').value.trim();
+  const errEl = document.getElementById('login-err');
+  errEl.style.display = 'none';
 
-    fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + pw } })
-      .then(function(r) {
-        if (r.status === 401) throw new Error('bad');
-        return r.json();
-      })
-      .then(function(d) {
-        document.getElementById('login-screen').style.display = 'none';
-        updateStats(d);
-        loadCurrentTab();
-      })
-      .catch(function() {
-        ADMIN_PW = '';
-        err.style.display = 'block';
-      });
+  if (email !== 'abdirahmanjamaa7@gmail.com') {
+    errEl.textContent = 'Invalid email address.';
+    errEl.style.display = 'block';
+    return;
   }
+
+  if (!pw) {
+    errEl.textContent = 'Please enter your password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  fetch('/api/stats', {
+    headers: { 'Authorization': 'Bearer ' + pw }
+  }).then(r => {
+    if (r.ok) {
+      TOKEN = pw;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadStats();
+      loadReservations();
+    } else {
+      errEl.textContent = 'Wrong password. Please try again.';
+      errEl.style.display = 'block';
+    }
+  }).catch(() => {
+    errEl.textContent = 'Connection error. Please try again.';
+    errEl.style.display = 'block';
+  });
+}
 
   document.getElementById('admin-pw').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') doLogin();
