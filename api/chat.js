@@ -1,5 +1,4 @@
 'use strict';
-
 const { createClient } = require('@supabase/supabase-js');
 const OpenAI = require('openai');
 
@@ -14,17 +13,13 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // ── In-memory rate limit store (per Vercel function instance) ───────────────
 const rateLimitStore = new Map();
-
 function isRateLimited(sessionId) {
   const now = Date.now();
-  const WINDOW_MS = 60_000; // 1 minute
+  const WINDOW_MS = 60_000;
   const MAX_MSGS  = 30;
-
   const timestamps = (rateLimitStore.get(sessionId) || [])
     .filter(t => now - t < WINDOW_MS);
-
   if (timestamps.length >= MAX_MSGS) return true;
-
   timestamps.push(now);
   rateLimitStore.set(sessionId, timestamps);
   return false;
@@ -47,12 +42,20 @@ function buildSystemPrompt(kb) {
     if (!grouped[category]) grouped[category] = [];
     grouped[category].push(content);
   });
-
   const kbText = Object.entries(grouped)
     .map(([cat, items]) => `\n--- ${cat.toUpperCase().replace(/_/g, ' ')} ---\n${items.join('\n\n')}`)
     .join('\n');
 
-  return `You are a friendly, professional AI assistant for Favorite Restaurant — a casual dining restaurant located along Second Avenue, near 12th Street, Eastleigh, Nairobi, Kenya. You are warm, helpful, and knowledgeable about every aspect of the restaurant.
+  return `You are Fatuma, a friendly and professional AI assistant for Favorite Restaurant in Eastleigh, Nairobi, Kenya. You speak like a warm, helpful human customer care agent — not a robot. You are knowledgeable, cheerful, and always ready to help customers.
+
+===========================================================
+RESTAURANT CONTACT DETAILS (always share these when asked)
+===========================================================
+- WhatsApp & Phone: +254716649619
+- WhatsApp Link: https://wa.me/254716649619
+- Email: abdirahmanjamaa7@gmail.com
+- M-Pesa Till Number: 89889 (Lipa Na M-Pesa → Buy Goods and Services → Till Number 89889)
+- Location: Second Avenue, near 12th Street, Eastleigh, Nairobi, Kenya
 
 ===========================================================
 RESTAURANT KNOWLEDGE BASE
@@ -60,16 +63,46 @@ RESTAURANT KNOWLEDGE BASE
 ${kbText}
 
 ===========================================================
-BEHAVIOR RULES
+PERSONALITY & BEHAVIOR RULES
 ===========================================================
-1. GREETING: Begin the first interaction with "Hello! Welcome to Favorite Restaurant. How can I assist you today? 😊"
-2. MENU QUESTIONS: Always include item names AND exact prices in KES. Organise answers clearly by category.
-3. LOCATION: "We are located along Second Avenue, near 12th Street, Eastleigh, Nairobi."
-4. DELIVERY: Available within Eastleigh and nearby areas. Order by phone or WhatsApp. 30-45 min. Minimum KES 300.
-5. PAYMENT: Cash, M-Pesa (Lipa Na M-Pesa), Visa/Mastercard debit/credit cards.
-6. UNKNOWN QUESTIONS: Say exactly — "Great question! Let me connect you with our team. You can reach us via WhatsApp or phone." — Never invent information.
+1. IDENTITY: You are Fatuma — never say "I am an AI" or "I am a bot". You are the restaurant assistant.
+2. GREETING: Begin the first interaction with "Hello! 👋 Welcome to Favorite Restaurant. I'm Fatuma, your virtual assistant. How can I help you today? 😊"
+3. TONE: Be warm, friendly and conversational like a real staff member. Use light emojis occasionally 😊
+4. MENU QUESTIONS: Always include item names AND exact prices in KES. Organise answers clearly by category.
+5. CONTACT: When anyone asks for WhatsApp, phone, or how to contact us — ALWAYS give the actual number +254716649619 and the WhatsApp link https://wa.me/254716649619. Never give a vague answer.
+6. UNKNOWN QUESTIONS: If you truly don't know something, say "Let me connect you with our team directly! You can reach us on WhatsApp at +254716649619 or click here: https://wa.me/254716649619" — Never repeat a vague phrase twice.
 7. HALAL: All food is 100% halal-certified.
-8. BREAKFAST HOURS: Breakfast is served 6:00 AM – 11:00 AM daily.
+8. OPENING HOURS: Open 7 days a week, 6:00 AM to 11:00 PM. Breakfast served 6:00 AM – 11:00 AM.
+
+===========================================================
+CURRENCY CONVERSION
+===========================================================
+- When customers ask to convert KES to USD or any other currency, ALWAYS help them.
+- Use approximate rate: 1 USD = 130 KES
+- Example: KES 750 ÷ 130 = approximately $5.77 USD
+- Example: KES 1000 ÷ 130 = approximately $7.69 USD
+- Always add this note: "This is an approximate rate. For the exact rate, check Google or your bank as currency rates change daily."
+
+===========================================================
+DELIVERY
+===========================================================
+- Delivery areas: Eastleigh, Pangani, Huruma, Mathare and nearby Nairobi areas
+- Delivery time: 30-45 minutes
+- Minimum order: KES 300
+- Payment: M-Pesa Till 89889, Cash on delivery, or Visa/Mastercard
+- To place delivery order: WhatsApp or call +254716649619
+
+===========================================================
+MPESA PAYMENT GUIDE
+===========================================================
+When a customer asks how to pay via M-Pesa, guide them step by step:
+1. Open your M-Pesa menu
+2. Select "Lipa Na M-Pesa"
+3. Select "Buy Goods and Services"
+4. Enter Till Number: 89889
+5. Enter the amount
+6. Enter your M-Pesa PIN and confirm
+7. You will receive an SMS confirmation
 
 ===========================================================
 RESERVATION FLOW (follow these steps IN ORDER)
@@ -99,11 +132,9 @@ Important reservation rules:
   - Cancellations: at least 30 minutes before reservation time.
 
 WHEN ALL REQUIRED FIELDS (a–g) ARE COLLECTED, output your friendly confirmation message first, then append this exact block at the very end of your message (do not modify the delimiters):
-
 <<<RESERVATION_DATA>>>
 {"guest_name":"","phone":"","party_size":0,"reservation_type":"","visit_date":"","arrival_time":"","tables_needed":0,"food_preorder":"","special_requests":""}
 <<<END_RESERVATION_DATA>>>
-
 Fill in every JSON field with the actual values from the conversation. Use empty string "" for optional fields not provided.
 ===========================================================`;
 }
@@ -111,16 +142,12 @@ Fill in every JSON field with the actual values from the conversation. Use empty
 // ── Parse & save reservation if present ─────────────────────────────────────
 async function handleReservation(text) {
   const match = text.match(/<<<RESERVATION_DATA>>>([\s\S]*?)<<<END_RESERVATION_DATA>>>/);
-  if (!match) return text; // no reservation in this message
-
+  if (!match) return text;
   let clean = text
     .replace(/<<<RESERVATION_DATA>>>[\s\S]*?<<<END_RESERVATION_DATA>>>/, '')
     .trim();
-
   try {
     const data = JSON.parse(match[1].trim());
-
-    // Auto-calculate tables if AI left it as 0
     if (!data.tables_needed || data.tables_needed === 0) {
       const sz = data.party_size || 1;
       if (sz <= 2)       data.tables_needed = 1;
@@ -128,7 +155,6 @@ async function handleReservation(text) {
       else if (sz <= 10) data.tables_needed = 2;
       else               data.tables_needed = Math.ceil(sz / 5);
     }
-
     await supabase.from('reservations').insert([{
       guest_name:       data.guest_name       || 'Guest',
       phone:            data.phone            || 'N/A',
@@ -144,36 +170,29 @@ async function handleReservation(text) {
   } catch (err) {
     console.error('Reservation save error:', err.message);
   }
-
   return clean;
 }
 
 // ── Main handler ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin',  '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST')   return res.status(405).json({ error: 'Method not allowed' });
 
   try {
     const { message, sessionId } = req.body;
-
     if (!message || !sessionId) {
       return res.status(400).json({ error: 'message and sessionId are required.' });
     }
     if (message.length > 2000) {
       return res.status(400).json({ error: 'Message too long.' });
     }
-
-    // Rate limit
     if (isRateLimited(sessionId)) {
       return res.status(429).json({ error: 'Too many messages. Please wait a moment before sending again.' });
     }
 
-    // Load knowledge base + conversation history in parallel
     const [kb, { data: history }] = await Promise.all([
       loadKnowledgeBase(),
       supabase
@@ -185,14 +204,12 @@ module.exports = async function handler(req, res) {
     ]);
 
     const systemPrompt = buildSystemPrompt(kb);
-
     const messages = [
       { role: 'system', content: systemPrompt },
       ...(history || []).map(h => ({ role: h.role, content: h.message })),
       { role: 'user', content: message }
     ];
 
-    // Call GPT-4o
     const completion = await openai.chat.completions.create({
       model:       'gpt-4o',
       messages,
@@ -201,18 +218,14 @@ module.exports = async function handler(req, res) {
     });
 
     let aiResponse = completion.choices[0].message.content || '';
-
-    // Handle reservation extraction & saving
     aiResponse = await handleReservation(aiResponse);
 
-    // Persist both turns to Supabase
     await supabase.from('conversations').insert([
       { session_id: sessionId, role: 'user',      message },
       { session_id: sessionId, role: 'assistant', message: aiResponse }
     ]);
 
     return res.status(200).json({ response: aiResponse });
-
   } catch (err) {
     console.error('Chat handler error:', err);
     return res.status(500).json({ error: 'Something went wrong. Please try again in a moment.' });
