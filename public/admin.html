@@ -20,7 +20,6 @@
       --amber:    #f57f17; --amber-lt: #fff8e1;
     }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
-
     /* LOGIN */
     #login-screen {
       position: fixed; inset: 0; background: linear-gradient(135deg, #1e1210 0%, #3e2723 100%);
@@ -36,7 +35,6 @@
     .login-btn { width: 100%; background: var(--orange); color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .2s; }
     .login-btn:hover { background: var(--orange-dk); }
     .login-err { color: #ef9a9a; font-size: 13px; margin-top: 10px; display: none; }
-
     /* SIDEBAR */
     .sidebar { width: 220px; background: var(--sidebar); min-height: 100vh; flex-shrink: 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
     .sidebar-logo { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,.07); }
@@ -54,7 +52,6 @@
     .sidebar-footer { padding: 16px 10px; border-top: 1px solid rgba(255,255,255,.07); }
     .logout-btn { width: 100%; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.5); border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .2s; }
     .logout-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
-
     /* MAIN */
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
@@ -62,25 +59,20 @@
     .topbar-right { display: flex; align-items: center; gap: 12px; }
     .refresh-btn { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all .2s; color: var(--text); }
     .refresh-btn:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
-
     .content { flex: 1; overflow-y: auto; padding: 24px; }
-
     /* STATS */
     .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .stat-card { background: var(--card); border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
     .stat-card-icon { font-size: 24px; margin-bottom: 10px; }
     .stat-card-num { font-size: 30px; font-weight: 800; color: var(--orange); line-height: 1; }
     .stat-card-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
     /* TABS CONTENT */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
     /* SECTION CARD */
     .section-card { background: var(--card); border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
     .section-card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; gap: 12px; }
     .section-card-title { font-size: 15px; font-weight: 700; }
-
     /* FILTERS */
     .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .filter-input, .filter-select {
@@ -89,7 +81,6 @@
       color: var(--text); transition: border .2s;
     }
     .filter-input:focus, .filter-select:focus { border-color: var(--orange); }
-
     /* TABLE */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -97,21 +88,17 @@
     tbody td { padding: 12px 14px; border-bottom: 1px solid #f5ede5; vertical-align: top; }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #fdf7f2; }
-
     /* BADGE */
     .badge { display: inline-block; padding: 3px 10px; border-radius: 30px; font-size: 11px; font-weight: 600; }
     .badge-pending  { background: var(--amber-lt); color: var(--amber); }
     .badge-confirmed{ background: var(--green-lt); color: var(--green); }
     .badge-cancelled{ background: var(--red-lt);   color: var(--red); }
-
     /* STATUS SELECT */
     .status-select { border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 12px; background: var(--bg); cursor: pointer; font-family: inherit; outline: none; }
     .status-select:focus { border-color: var(--orange); }
-
     /* EXPORT BTN */
     .export-btn { background: var(--green); color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: background .2s; }
     .export-btn:hover { background: #1b5e20; }
-
     /* CONVERSATIONS */
     .session-list { padding: 0; }
     .session-item { padding: 14px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .15s; }
@@ -128,7 +115,6 @@
     .session-msg.user   .session-msg-bubble { background: #fff3e0; border: 1px solid #ffe0b2; }
     .session-msg.assistant .session-msg-bubble { background: #fff; border-left: 3px solid var(--orange); }
     .session-msg-ts { font-size: 10px; color: var(--muted); margin-top: 2px; }
-
     /* KNOWLEDGE BASE */
     .kb-category { margin-bottom: 20px; }
     .kb-cat-title { font-size: 13px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: .5px; padding: 12px 20px; background: #fdf7f2; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
@@ -154,15 +140,12 @@
     .add-kb-textarea:focus { border-color: var(--orange); }
     .add-kb-submit { background: var(--orange); color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; }
     .add-kb-submit:hover { background: var(--orange-dk); }
-
     /* EMPTY / LOADING */
     .empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
     .empty-state .empty-icon { font-size: 40px; margin-bottom: 10px; }
     .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
-
     /* SEARCH */
     .search-wrap { display: flex; gap: 10px; }
-
     @media (max-width: 700px) {
       .sidebar { width: 60px; }
       .sidebar-logo-title, .sidebar-logo-sub, .nav-item span { display: none; }
@@ -172,19 +155,18 @@
   </style>
 </head>
 <body>
-
 <!-- LOGIN SCREEN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">🔐</div>
     <h1>Admin Dashboard</h1>
     <p>Favorite Restaurant AI · Secure Access</p>
+    <input class="login-input" type="email" id="admin-email" placeholder="Enter admin email" autocomplete="email">
     <input class="login-input" type="password" id="admin-pw" placeholder="Enter admin password" autocomplete="current-password">
     <button class="login-btn" onclick="doLogin()">Login →</button>
-    <div class="login-err" id="login-err">Incorrect password. Please try again.</div>
+    <div class="login-err" id="login-err">Incorrect email or password. Please try again.</div>
   </div>
 </div>
-
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-logo">
@@ -210,7 +192,6 @@
     <button class="logout-btn" onclick="logout()">⬅ Logout</button>
   </div>
 </div>
-
 <!-- MAIN CONTENT -->
 <div class="main">
   <div class="topbar">
@@ -219,7 +200,6 @@
       <button class="refresh-btn" onclick="loadCurrentTab()">↺ Refresh</button>
     </div>
   </div>
-
   <div class="content">
     <!-- STATS ROW -->
     <div class="stats-row">
@@ -244,7 +224,6 @@
         <div class="stat-card-label">Reservations This Week</div>
       </div>
     </div>
-
     <!-- RESERVATIONS TAB -->
     <div class="tab-content active" id="tab-reservations">
       <div class="section-card">
@@ -277,7 +256,6 @@
         </div>
       </div>
     </div>
-
     <!-- CONVERSATIONS TAB -->
     <div class="tab-content" id="tab-conversations">
       <div class="section-card">
@@ -293,7 +271,6 @@
         </div>
       </div>
     </div>
-
     <!-- KNOWLEDGE BASE TAB -->
     <div class="tab-content" id="tab-knowledge">
       <div class="section-card">
@@ -317,20 +294,22 @@
     </div>
   </div>
 </div>
-
 <script>
   var ADMIN_PW = '';
   var allReservations = [];
   var currentTab = 'reservations';
-
   // LOGIN
   function doLogin() {
+    var email = document.getElementById('admin-email').value.trim();
     var pw = document.getElementById('admin-pw').value.trim();
-    if (!pw) return;
+    if (!email || !pw) return;
+    if (email !== 'abdirahmanjamaa7@gmail.com') {
+      document.getElementById('login-err').style.display = 'block';
+      return;
+    }
     ADMIN_PW = pw;
     var err = document.getElementById('login-err');
     err.style.display = 'none';
-
     fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + pw } })
       .then(function(r) {
         if (r.status === 401) throw new Error('bad');
@@ -346,30 +325,29 @@
         err.style.display = 'block';
       });
   }
-
+  document.getElementById('admin-email').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
   document.getElementById('admin-pw').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') doLogin();
   });
-
   function logout() {
     ADMIN_PW = '';
     document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('admin-email').value = '';
     document.getElementById('admin-pw').value = '';
   }
-
   // STATS
   function loadStats() {
     fetch('/api/stats', { headers: { 'Authorization': 'Bearer ' + ADMIN_PW } })
       .then(r => r.json()).then(updateStats).catch(console.error);
   }
-
   function updateStats(d) {
     document.getElementById('stat-msgs').textContent        = d.messages_today         ?? '—';
     document.getElementById('stat-res-today').textContent   = d.reservations_today     ?? '—';
     document.getElementById('stat-sessions').textContent    = d.unique_sessions_today  ?? '—';
     document.getElementById('stat-res-week').textContent    = d.reservations_this_week ?? '—';
   }
-
   // TAB SWITCHING
   function switchTab(tab) {
     currentTab = tab;
@@ -381,14 +359,12 @@
     document.getElementById('topbar-title').textContent = titles[tab];
     loadCurrentTab();
   }
-
   function loadCurrentTab() {
     loadStats();
     if (currentTab === 'reservations') loadReservations();
     if (currentTab === 'conversations') loadConversations();
     if (currentTab === 'knowledge') loadKnowledge();
   }
-
   // RESERVATIONS
   function loadReservations() {
     var date   = document.getElementById('res-filter-date').value;
@@ -396,9 +372,7 @@
     var url = '/api/reservations?';
     if (date)   url += 'date=' + date + '&';
     if (status) url += 'status=' + status;
-
     document.getElementById('res-table-body').innerHTML = '<tr><td colspan="11" class="loading">Loading…</td></tr>';
-
     fetch(url, { headers: { 'Authorization': 'Bearer ' + ADMIN_PW } })
       .then(r => r.json())
       .then(function(data) {
@@ -409,7 +383,6 @@
         document.getElementById('res-table-body').innerHTML = '<tr><td colspan="11" class="empty-state">Failed to load reservations.</td></tr>';
       });
   }
-
   function renderReservations(data) {
     var tbody = document.getElementById('res-table-body');
     if (!data || data.length === 0) {
@@ -441,7 +414,6 @@
       '</tr>';
     }).join('');
   }
-
   function updateStatus(id, status) {
     fetch('/api/reservations', {
       method: 'PATCH',
@@ -452,7 +424,6 @@
     .then(function() { loadReservations(); })
     .catch(function() { alert('Failed to update status.'); });
   }
-
   function exportCSV() {
     if (!allReservations.length) return alert('No data to export.');
     var cols = ['id','guest_name','phone','party_size','reservation_type','visit_date','arrival_time','tables_needed','food_preorder','special_requests','status','created_at'];
@@ -466,13 +437,11 @@
     a.download = 'reservations_' + new Date().toISOString().split('T')[0] + '.csv';
     a.click();
   }
-
   // CONVERSATIONS
   function loadConversations() {
     var search = document.getElementById('conv-search').value.trim();
     var url = '/api/conversations' + (search ? '?keyword=' + encodeURIComponent(search) : '');
     document.getElementById('session-list').innerHTML = '<div class="loading">Loading…</div>';
-
     fetch(url, { headers: { 'Authorization': 'Bearer ' + ADMIN_PW } })
       .then(r => r.json())
       .then(renderConversations)
@@ -480,11 +449,9 @@
         document.getElementById('session-list').innerHTML = '<div class="empty-state">Failed to load conversations.</div>';
       });
   }
-
   document.getElementById('conv-search').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') loadConversations();
   });
-
   function renderConversations(sessions) {
     var list = document.getElementById('session-list');
     if (!sessions || sessions.length === 0) {
@@ -497,7 +464,6 @@
       var dt = startedAt ? new Date(startedAt) : new Date();
       var dateStr = dt.toLocaleDateString('en-KE', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
       var lastMsg = msgs.length ? msgs[msgs.length - 1].message : '—';
-
       var msgsHtml = msgs.map(function(m) {
         var mDt = new Date(m.created_at);
         var mTs = mDt.toLocaleTimeString('en-KE', { hour:'2-digit', minute:'2-digit' });
@@ -506,7 +472,6 @@
           '<div class="session-msg-ts">' + (m.role === 'user' ? 'Customer' : 'AI') + ' · ' + mTs + '</div>' +
         '</div>';
       }).join('');
-
       return '<div class="session-item" onclick="toggleSession(this)">' +
         '<div class="session-header">' +
           '<span class="session-id">' + esc(s.session_id) + '</span>' +
@@ -518,17 +483,14 @@
     }).join('');
     list._sessions = sessions;
   }
-
   function toggleSession(el) {
     var nextEl = el.nextElementSibling;
     if (nextEl && nextEl.classList.contains('session-messages')) {
       nextEl.style.display = nextEl.style.display === 'block' ? 'none' : 'block';
     }
   }
-
   // KNOWLEDGE BASE
   var kbData = [];
-
   function loadKnowledge() {
     document.getElementById('kb-content').innerHTML = '<div class="loading">Loading knowledge base…</div>';
     fetch('/api/knowledge', { headers: { 'Authorization': 'Bearer ' + ADMIN_PW } })
@@ -541,7 +503,6 @@
         document.getElementById('kb-content').innerHTML = '<div class="empty-state">Failed to load knowledge base.</div>';
       });
   }
-
   function renderKnowledge(data) {
     var el = document.getElementById('kb-content');
     if (!data || !data.length) {
@@ -553,7 +514,6 @@
       if (!grouped[entry.category]) grouped[entry.category] = [];
       grouped[entry.category].push(entry);
     });
-
     el.innerHTML = Object.entries(grouped).map(function([cat, entries]) {
       return '<div class="kb-category">' +
         '<div class="kb-cat-title">' +
@@ -572,7 +532,6 @@
       '</div>';
     }).join('');
   }
-
   function editKBEntry(id) {
     var entry = kbData.find(function(e) { return e.id === id; });
     if (!entry) return;
@@ -580,32 +539,26 @@
     var actionsEl = contentEl.nextElementSibling;
     contentEl.style.display = 'none';
     actionsEl.style.display = 'none';
-
     var ta = document.createElement('textarea');
     ta.className = 'kb-edit-area';
     ta.value = entry.content;
     ta.id = 'kb-edit-' + id;
-
     var saveBtn = document.createElement('button');
     saveBtn.className = 'kb-btn kb-btn-save';
     saveBtn.textContent = '💾 Save';
     saveBtn.onclick = function() { saveKBEntry(id, ta.value); };
-
     var cancelBtn = document.createElement('button');
     cancelBtn.className = 'kb-btn kb-btn-cancel';
     cancelBtn.textContent = '✕ Cancel';
     cancelBtn.onclick = function() { renderKnowledge(kbData); };
-
     var actionsNew = document.createElement('div');
     actionsNew.className = 'kb-entry-actions';
     actionsNew.appendChild(saveBtn);
     actionsNew.appendChild(cancelBtn);
-
     var entryEl = document.getElementById('kb-entry-' + id);
     entryEl.appendChild(ta);
     entryEl.appendChild(actionsNew);
   }
-
   function saveKBEntry(id, content) {
     fetch('/api/knowledge', {
       method: 'PATCH',
@@ -616,7 +569,6 @@
     .then(function() { loadKnowledge(); })
     .catch(function() { alert('Failed to save.'); });
   }
-
   function deleteKBEntry(id) {
     if (!confirm('Delete this knowledge base entry? This cannot be undone.')) return;
     fetch('/api/knowledge', {
@@ -627,12 +579,10 @@
     .then(function() { loadKnowledge(); })
     .catch(function() { alert('Failed to delete.'); });
   }
-
   function addKBEntry() {
     var cat     = document.getElementById('new-kb-cat').value.trim();
     var content = document.getElementById('new-kb-content').value.trim();
     if (!cat || !content) return alert('Please enter both category and content.');
-
     fetch('/api/knowledge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_PW },
@@ -646,7 +596,6 @@
     })
     .catch(function() { alert('Failed to add entry.'); });
   }
-
   // UTILS
   function esc(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
