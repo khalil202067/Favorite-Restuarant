@@ -31,9 +31,10 @@ module.exports = async function handler(req, res) {
     }
 
     if (created_date) {
-      query = query
-        .gte('created_at', created_date + 'T00:00:00.000Z')
-        .lte('created_at', created_date + 'T23:59:59.999Z');
+      // Use Nairobi timezone (EAT = UTC+3) so dates match what admin sees on screen
+      const startUTC = new Date(created_date + 'T00:00:00+03:00').toISOString();
+      const endUTC   = new Date(created_date + 'T23:59:59+03:00').toISOString();
+      query = query.gte('created_at', startUTC).lte('created_at', endUTC);
     }
 
     if (status && status !== 'all') query = query.eq('status', status);
