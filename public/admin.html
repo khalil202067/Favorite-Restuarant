@@ -230,6 +230,10 @@
         <div class="section-card-header">
           <div class="section-card-title">📅 Reservations</div>
           <div class="filters">
+            <select class="filter-select" id="res-date-type" onchange="loadReservations()">
+              <option value="visit">Visit Date</option>
+              <option value="created">Created Date</option>
+            </select>
             <input class="filter-input" type="date" id="res-filter-date" onchange="loadReservations()">
             <select class="filter-select" id="res-filter-status" onchange="loadReservations()">
               <option value="">All Statuses</option>
@@ -367,10 +371,12 @@
   }
   // RESERVATIONS
   function loadReservations() {
-    var date   = document.getElementById('res-filter-date').value;
-    var status = document.getElementById('res-filter-status').value;
+    var date     = document.getElementById('res-filter-date').value;
+    var dateType = document.getElementById('res-date-type').value;
+    var status   = document.getElementById('res-filter-status').value;
     var url = '/api/reservations?';
-    if (date)   url += 'date=' + date + '&';
+    if (date && dateType === 'visit')   url += 'date=' + date + '&';
+    if (date && dateType === 'created') url += 'created_date=' + date + '&';
     if (status) url += 'status=' + status;
     document.getElementById('res-table-body').innerHTML = '<tr><td colspan="11" class="loading">Loading…</td></tr>';
     fetch(url, { headers: { 'Authorization': 'Bearer ' + ADMIN_PW } })
