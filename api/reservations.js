@@ -21,8 +21,21 @@ module.exports = async function handler(req, res) {
       .from('reservations')
       .select('id, guest_name, phone, party_size, reservation_type, visit_date, arrival_time, tables_needed, food_preorder, special_requests, status, created_at')
       .order('created_at', { ascending: false });
-    if (date) query = query.eq('visit_date', date);
-    if (created_date) query = query.gte('created_at', created_date + 'T00:00:00.000Z').lte('created_at', created_date + 'T23:59:59.999Z');
+
+    if (date) {
+      // visit_date is stored as text e.g. "April 4, 2026" — convert and search
+      const d = new Date(date + 'T12:00:00Z');
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const textDate = months[d.getUTCMonth()] + ' ' + d.getUTCDate() + ', ' + d.getUTCFullYear();
+      query = query.ilike('visit_date', '%' + textDate + '%');
+    }
+
+    if (created_date) {
+      query = query
+        .gte('created_at', created_date + 'T00:00:00.000Z')
+        .lte('created_at', created_date + 'T23:59:59.999Z');
+    }
+
     if (status && status !== 'all') query = query.eq('status', status);
     const { data, error } = await query;
     if (error) return res.status(500).json({ error: error.message });
