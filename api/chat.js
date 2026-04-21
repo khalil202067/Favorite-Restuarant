@@ -17,14 +17,10 @@ const rateLimitStore = new Map();
 
 function isRateLimited(sessionId) {
   const now = Date.now();
-  const WINDOW_MS = 60_000; // 1 minute
+  const WINDOW_MS = 60_000;
   const MAX_MSGS  = 30;
-
-  const timestamps = (rateLimitStore.get(sessionId) || [])
-    .filter(t => now - t < WINDOW_MS);
-
+  const timestamps = (rateLimitStore.get(sessionId) || []).filter(t => now - t < WINDOW_MS);
   if (timestamps.length >= MAX_MSGS) return true;
-
   timestamps.push(now);
   rateLimitStore.set(sessionId, timestamps);
   return false;
@@ -179,24 +175,38 @@ module.exports = async function handler(req, res) {
       return res.status(429).json({ error: 'Too many messages. Please wait a moment before sending again.' });
     }
 
-    // Load KB + history + customer reservations in parallel
-    const [kb, { data: history }, { data: pastReservations }] = await Promise.all([
-      loadKnowledgeBase(),
-      supabase
-        .from('conversations')
-        .select('role, message')
-        .eq('session_id', sessionId)
-        .order('created_at', { ascending: true })
-        .limit(30),
-      customerPhone
-        ? supabase
-            .from('reservations')
-            .select('guest_name, visit_date, arrival_time, party_size, reservation_type, status')
-            .eq('phone', customerPhone)
-            .order('created_at', { ascending: false })
-            .limit(5)
-        : Promise.resolve({ data: [] })
-    ]);
+    // Step 1: Load knowledge base
+    let kb;
+    try {
+      kb = await loadKnowledgeBase();
+    } catch (err) {
+      console.error('KB error:', err);
+      return res.status(500).json({ error: 'Database error (KB): ' + err.message });
+    }
+
+    // Step 2: Load conversation history
+    const { data: history, error: histErr } = await supabase
+      .from('conversations')
+      .select('role, message')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: true })
+      .limit(30);
+    if (histErr) {
+      console.error('History error:', histErr);
+      return res.status(500).json({ error: 'Database error (history): ' + histErr.message });
+    }
+
+    // Step 3: Load past reservations for returning customer
+    let pastReservations = [];
+    if (customerPhone) {
+      const { data: resData, error: resErr } = await supabase
+        .from('reservations')
+        .select('guest_name, visit_date, arrival_time, party_size, reservation_type, status')
+        .eq('phone', customerPhone)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (!resErr) pastReservations = resData || [];
+    }
 
     // Build customer context string
     let customerContext = null;
@@ -204,7 +214,7 @@ module.exports = async function handler(req, res) {
       const lines = [];
       if (customerName)  lines.push(`Customer name: ${customerName}`);
       if (customerPhone) lines.push(`Customer phone: ${customerPhone}`);
-      if (pastReservations && pastReservations.length > 0) {
+      if (pastReservations.length > 0) {
         lines.push('Previous reservations (most recent first):');
         pastReservations.forEach((r, i) => {
           lines.push(`  ${i + 1}. ${r.visit_date} at ${r.arrival_time} — party of ${r.party_size} (${r.reservation_type}) — Status: ${r.status}`);
@@ -217,31 +227,42 @@ module.exports = async function handler(req, res) {
 
     const systemPrompt = buildSystemPrompt(kb, customerContext);
 
-    const messages = [
+    const chatMessages = [
       { role: 'system', content: systemPrompt },
       ...(history || []).map(h => ({ role: h.role, content: h.message })),
       { role: 'user', content: message }
     ];
 
-    const completion = await openai.chat.completions.create({
-      model:       'gpt-4o',
-      messages,
-      max_tokens:  1200,
-      temperature: 0.65
-    });
+    // Step 4: Call OpenAI
+    let completion;
+    try {
+      completion = await openai.chat.completions.create({
+        model:       'gpt-4o',
+        messages:    chatMessages,
+        max_tokens:  1200,
+        temperature: 0.65
+      });
+    } catch (err) {
+      console.error('OpenAI error:', err);
+      return res.status(500).json({ error: 'AI error: ' + err.message });
+    }
 
     let aiResponse = completion.choices[0].message.content || '';
     aiResponse = await handleReservation(aiResponse);
 
-    await supabase.from('conversations').insert([
+    // Step 5: Save conversation (non-blocking on failure)
+    const { error: saveErr } = await supabase.from('conversations').insert([
       { session_id: sessionId, role: 'user',      message,            customer_phone: customerPhone || null, customer_name: customerName || null },
       { session_id: sessionId, role: 'assistant', message: aiResponse, customer_phone: customerPhone || null, customer_name: customerName || null }
     ]);
+    if (saveErr) {
+      console.error('Save error:', saveErr.message);
+    }
 
     return res.status(200).json({ response: aiResponse });
 
   } catch (err) {
     console.error('Chat handler error:', err);
-    return res.status(500).json({ error: 'Something went wrong. Please try again in a moment.' });
+    return res.status(500).json({ error: 'Unexpected error: ' + err.message });
   }
 };
