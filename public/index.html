@@ -245,6 +245,60 @@
 </head>
 <body>
 
+<!-- ── PASSWORD GATE ─────────────────────────────────────────────────────── -->
+<div id="fav-gate" style="
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#fff8f0 0%,#ffe0b2 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+">
+  <div style="
+    background:#fff;border-radius:20px;padding:40px 36px;
+    box-shadow:0 12px 50px rgba(230,81,0,.15);
+    width:100%;max-width:380px;text-align:center;
+  ">
+    <div style="width:56px;height:56px;background:#e65100;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+      <svg width="26" height="26" fill="#fff" viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2V6a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v2H9V6a3 3 0 0 1 3-3zm0 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></svg>
+    </div>
+    <div style="font-size:20px;font-weight:800;color:#3e2723;margin-bottom:6px;">Favorite Restaurant AI</div>
+    <div style="font-size:13px;color:#a1887f;margin-bottom:28px;">This demo is private. Enter the password to continue.</div>
+    <input id="fav-gate-input" type="password" placeholder="Enter password" style="
+      width:100%;padding:12px 16px;border:1.5px solid #ffe0b2;border-radius:12px;
+      font-size:14px;outline:none;background:#fff8f0;color:#3e2723;
+      box-sizing:border-box;margin-bottom:12px;transition:border .2s;
+    " onkeydown="if(event.key==='Enter')checkGate()">
+    <div id="fav-gate-err" style="font-size:12px;color:#e65100;margin-bottom:10px;min-height:18px;"></div>
+    <button onclick="checkGate()" style="
+      width:100%;padding:13px;background:#e65100;color:#fff;border:none;
+      border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;
+      transition:background .2s;
+    " onmouseover="this.style.background='#bf360c'" onmouseout="this.style.background='#e65100'">
+      Enter →
+    </button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var PASS = 'FavRest@Demo2024';
+    var KEY  = 'fav_demo_auth';
+    if (sessionStorage.getItem(KEY) === '1') {
+      document.getElementById('fav-gate').style.display = 'none';
+    }
+    window.checkGate = function() {
+      var val = document.getElementById('fav-gate-input').value;
+      if (val === PASS) {
+        sessionStorage.setItem(KEY, '1');
+        document.getElementById('fav-gate').style.display = 'none';
+      } else {
+        document.getElementById('fav-gate-err').textContent = 'Incorrect password. Try again.';
+        document.getElementById('fav-gate-input').value = '';
+        document.getElementById('fav-gate-input').focus();
+      }
+    };
+  })();
+</script>
+
 <!-- NAV -->
 <nav>
   <a class="nav-logo" href="#">
@@ -454,7 +508,8 @@
 <!-- FOOTER -->
 <footer>
   <p>© 2026 Favorite Restaurant AI Chatbot · Demo built for Favorite Restaurant, Eastleigh, Nairobi</p>
-  <p style="margin-top:6px;"> 
+  <p style="margin-top:6px;">
+    <a href="/admin">Admin Dashboard</a> ·
     <a href="mailto:abdirahmanjamaa7@gmail.com">Contact Developer</a>
   </p>
 </footer>
