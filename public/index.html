@@ -110,9 +110,7 @@
     }
     .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
 
-    .hero-demo-note {
-      margin-top: 32px; font-size: 13px; color: var(--muted);
-    }
+    .hero-demo-note { margin-top: 32px; font-size: 13px; color: var(--muted); }
     .hero-demo-note strong { color: var(--orange); }
 
     /* STATS BAR */
@@ -171,9 +169,7 @@
     /* DEMO SECTION */
     .demo-section { padding: 80px 24px; background: white; text-align: center; }
     .demo-inner { max-width: 800px; margin: 0 auto; }
-    .demo-phones {
-      display: flex; gap: 20px; justify-content: center; margin-top: 50px; flex-wrap: wrap;
-    }
+    .demo-phones { display: flex; gap: 20px; justify-content: center; margin-top: 50px; flex-wrap: wrap; }
     .demo-phone {
       background: var(--cream); border-radius: 20px; padding: 20px;
       border: 1px solid #ffe0b2; width: 220px;
@@ -282,14 +278,29 @@
   (function() {
     var PASS = 'FavRest@Demo2024';
     var KEY  = 'fav_demo_auth';
-    if (sessionStorage.getItem(KEY) === '1') {
+
+    function unlockSite() {
       document.getElementById('fav-gate').style.display = 'none';
+      var widget = document.getElementById('fav-chat-root');
+      if (widget) widget.style.display = 'block';
     }
+
+    // Hide widget completely until password is entered
+    var style = document.createElement('style');
+    style.textContent = '#fav-chat-root { display: none !important; }';
+    document.head.appendChild(style);
+
+    if (sessionStorage.getItem(KEY) === '1') {
+      style.textContent = '';
+      unlockSite();
+    }
+
     window.checkGate = function() {
       var val = document.getElementById('fav-gate-input').value;
       if (val === PASS) {
         sessionStorage.setItem(KEY, '1');
-        document.getElementById('fav-gate').style.display = 'none';
+        style.textContent = '';
+        unlockSite();
       } else {
         document.getElementById('fav-gate-err').textContent = 'Incorrect password. Try again.';
         document.getElementById('fav-gate-input').value = '';
